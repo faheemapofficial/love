@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>A Surprise</title>
+  <title>For Safa</title>
   <style>
     /* ---------- RESET ---------- */
     * {
@@ -17,7 +17,7 @@
       min-height: 100%;
       overflow-x: hidden;
       -webkit-tap-highlight-color: transparent;
-      background: #2b0a1a;
+      background: #1a0510;
     }
 
     body {
@@ -26,72 +26,76 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Segoe UI', 'Helvetica Neue', system-ui, -apple-system, sans-serif;
+      font-family: 'Georgia', 'Times New Roman', 'Palatino', serif;
       position: relative;
-      transition: background 1.2s ease;
+      transition: background 2.2s ease;
     }
 
-    /* Background states */
-    body.state-dark {
-      background: #2b0a1a;
+    body.state-midnight {
+      background: radial-gradient(circle at 50% 40%, #2d0a1a 0%, #1a0510 60%, #0f0208 100%);
     }
 
-    body.state-reveal {
-      background: radial-gradient(circle at 30% 20%, #ffe4ec 0%, #fff1e8 55%, #fde2e8 100%);
+    body.state-revealed {
+      background: radial-gradient(circle at 30% 20%, #ffe4ec 0%, #fff1e8 45%, #fde2e8 100%);
     }
 
-    /* ---------- CANVAS (particles) ---------- */
-    #particleCanvas {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 3;
-    }
-
-    /* ---------- AMBIENT SPARKLES (dark phase) ---------- */
-    .ambient-sparkles {
+    /* ---------- GRAIN ---------- */
+    .grain {
       position: fixed;
       inset: 0;
       pointer-events: none;
       z-index: 1;
-      transition: opacity 1s ease;
+      opacity: 0.06;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      transition: opacity 1.5s ease;
     }
 
-    .ambient-sparkles.fade-out {
+    body.state-revealed .grain {
+      opacity: 0.04;
+    }
+
+    /* ---------- AMBIENT GLOW DOTS ---------- */
+    .ambient-glow {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      transition: opacity 1.5s ease;
+    }
+
+    .ambient-glow.fade-out {
       opacity: 0;
     }
 
-    .sparkle-dot {
+    .glow-dot {
       position: absolute;
       width: 3px;
       height: 3px;
       border-radius: 50%;
-      background: #ffd7e6;
-      box-shadow: 0 0 6px 2px rgba(255, 200, 220, 0.5);
-      animation: twinkle 3s infinite ease-in-out;
-      opacity: 0.3;
+      background: #ffd7a8;
+      box-shadow: 0 0 8px 3px rgba(255, 200, 150, 0.5);
+      animation: gentleTwinkle 4s infinite ease-in-out;
+      opacity: 0.2;
     }
 
-    @keyframes twinkle {
-      0% { opacity: 0.1; transform: scale(0.8); }
-      50% { opacity: 0.6; transform: scale(1.2); }
-      100% { opacity: 0.1; transform: scale(0.8); }
+    @keyframes gentleTwinkle {
+      0% { opacity: 0.08; transform: scale(0.8); }
+      50% { opacity: 0.5; transform: scale(1.15); }
+      100% { opacity: 0.08; transform: scale(0.8); }
     }
 
-    /* ---------- APP CONTAINER ---------- */
+    /* ---------- APP ---------- */
     #app {
       position: relative;
       z-index: 10;
       width: 100%;
-      max-width: 700px;
+      max-width: 680px;
       min-height: 100vh;
       min-height: 100dvh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 1.5rem;
+      padding: max(1.5rem, env(safe-area-inset-top)) max(1.5rem, env(safe-area-inset-right)) max(1.5rem, env(safe-area-inset-bottom)) max(1.5rem, env(safe-area-inset-left));
     }
 
     /* ---------- INITIAL SCREEN ---------- */
@@ -103,68 +107,133 @@
       text-align: center;
       width: 100%;
       z-index: 20;
-      transition: opacity 0.6s ease, transform 0.6s ease;
+      transition: opacity 0.9s ease, transform 0.9s ease;
     }
 
     #initialScreen.hidden {
       opacity: 0;
-      transform: scale(0.8);
+      transform: scale(0.85);
       pointer-events: none;
       position: absolute;
       visibility: hidden;
     }
 
-    /* Small glowing heart button */
-    .heart-btn {
+    .rose-btn {
       position: relative;
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: none;
-      background: radial-gradient(circle at 35% 30%, #ff9eb5, #c94060 80%);
-      box-shadow:
-        0 0 0 6px rgba(255, 150, 180, 0.25),
-        0 0 30px 8px rgba(220, 80, 120, 0.5),
-        0 0 60px 16px rgba(200, 60, 100, 0.3),
-        inset 0 -4px 12px rgba(130, 20, 50, 0.5),
-        inset 0 6px 16px rgba(255, 200, 220, 0.6);
-      cursor: pointer;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      transition: transform 0.15s ease, box-shadow 0.3s ease;
-      animation: heartbeat 1.8s infinite ease-in-out;
-      will-change: transform;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 1.5rem;
       outline: none;
       user-select: none;
       -webkit-user-select: none;
+      animation: roseSway 5s infinite ease-in-out;
+      will-change: transform;
+      transition: transform 0.2s ease;
     }
 
-    .heart-btn:focus-visible {
-      outline: 3px solid #ffb3c6;
-      outline-offset: 10px;
+    .rose-btn:focus-visible {
+      outline: 3px solid rgba(255, 200, 160, 0.7);
+      outline-offset: 12px;
+      border-radius: 50%;
     }
 
-    .heart-btn:active {
-      transform: scale(0.9);
+    .rose-btn:active {
+      transform: scale(0.95);
     }
 
-    .heart-btn-label {
+    @keyframes roseSway {
+      0% { transform: rotate(-1.5deg) translateY(0); }
+      25% { transform: rotate(0deg) translateY(-3px); }
+      50% { transform: rotate(1.5deg) translateY(0); }
+      75% { transform: rotate(0deg) translateY(-3px); }
+      100% { transform: rotate(-1.5deg) translateY(0); }
+    }
+
+    .spotlight {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(255, 200, 150, 0.12) 0%, rgba(255, 180, 130, 0.04) 40%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      animation: spotlightPulse 4s infinite ease-in-out;
+    }
+
+    @keyframes spotlightPulse {
+      0% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
+      100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .rose-svg {
+      width: 170px;
+      height: 210px;
+      position: relative;
+      z-index: 2;
+      filter: drop-shadow(0 0 30px rgba(200, 80, 110, 0.4));
+    }
+
+    .spark-orbit {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 200px;
+      height: 200px;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 3;
+      animation: orbitSpin 5s linear infinite;
+    }
+
+    @keyframes orbitSpin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    .spark-dot {
+      position: absolute;
+      top: -5px;
+      left: 50%;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ffd7a8;
+      box-shadow: 0 0 12px 4px rgba(255, 200, 150, 0.8), 0 0 24px 8px rgba(255, 180, 130, 0.4);
+      transform: translateX(-50%);
+      animation: sparkGlow 1.5s infinite ease-in-out;
+    }
+
+    @keyframes sparkGlow {
+      0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(0.9); }
+      50% { opacity: 1; transform: translateX(-50%) scale(1.2); }
+    }
+
+    .tap-label {
+      margin-top: 2rem;
+      font-family: 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
       font-size: 1rem;
-      font-weight: 500;
-      letter-spacing: 2px;
-      color: #fff0f5;
-      text-shadow: 0 1px 8px rgba(160, 40, 70, 0.8), 0 0 14px rgba(255, 180, 200, 0.8);
+      font-weight: 300;
+      letter-spacing: 4px;
       text-transform: uppercase;
+      color: #e8c8a8;
+      text-shadow: 0 0 20px rgba(255, 200, 150, 0.5);
+      opacity: 0.85;
+      z-index: 5;
+      animation: labelFade 3s infinite ease-in-out;
     }
 
-    @keyframes heartbeat {
-      0% { transform: scale(1); }
-      12% { transform: scale(1.12); }
-      24% { transform: scale(1); }
-      36% { transform: scale(1.12); }
-      48% { transform: scale(1); }
-      100% { transform: scale(1); }
+    @keyframes labelFade {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
     }
 
     /* ---------- FINAL SCREEN ---------- */
@@ -178,11 +247,11 @@
       width: 100%;
       min-height: 100vh;
       min-height: 100dvh;
-      padding: 1.5rem;
+      padding: max(1.5rem, env(safe-area-inset-top)) max(1.5rem, env(safe-area-inset-right)) max(1.5rem, env(safe-area-inset-bottom)) max(1.5rem, env(safe-area-inset-left));
       z-index: 30;
       opacity: 0;
       visibility: hidden;
-      transition: opacity 0.9s ease, visibility 0s 0.9s;
+      transition: opacity 1.2s ease, visibility 0s 1.2s;
       pointer-events: none;
     }
 
@@ -190,32 +259,7 @@
       opacity: 1;
       visibility: visible;
       pointer-events: auto;
-      transition: opacity 0.9s ease, visibility 0s 0s;
-    }
-
-    /* Constellation frame */
-    .constellation {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1;
-      overflow: hidden;
-    }
-
-    .constellation-star {
-      position: absolute;
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: #ffd7e6;
-      box-shadow: 0 0 8px 3px rgba(255, 200, 220, 0.7);
-      opacity: 0.6;
-      animation: constellationPulse 4s infinite ease-in-out;
-    }
-
-    @keyframes constellationPulse {
-      0%, 100% { opacity: 0.4; transform: scale(0.9); }
-      50% { opacity: 0.9; transform: scale(1.1); }
+      transition: opacity 1.2s ease, visibility 0s 0s;
     }
 
     /* Falling petals */
@@ -230,7 +274,7 @@
     .falling-petal {
       position: absolute;
       font-size: 1.2rem;
-      opacity: 0.45;
+      opacity: 0.4;
       animation: fallDown linear infinite;
       will-change: transform, opacity;
       user-select: none;
@@ -238,8 +282,8 @@
 
     @keyframes fallDown {
       0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
-      10% { opacity: 0.5; }
-      90% { opacity: 0.5; }
+      10% { opacity: 0.45; }
+      90% { opacity: 0.45; }
       100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
     }
 
@@ -247,119 +291,224 @@
     .glass-card {
       position: relative;
       z-index: 10;
-      max-width: 520px;
+      max-width: 560px;
       width: 100%;
-      padding: 3rem 2rem 3.2rem;
-      background: rgba(255, 245, 240, 0.3);
-      backdrop-filter: blur(18px) saturate(180%);
-      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      max-height: 92vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 3rem 2.2rem 3rem;
+      background: rgba(255, 245, 240, 0.32);
+      backdrop-filter: blur(22px) saturate(170%);
+      -webkit-backdrop-filter: blur(22px) saturate(170%);
       border-radius: 56px;
-      border: 1px solid rgba(255, 215, 215, 0.7);
+      border: 1px solid rgba(255, 215, 200, 0.55);
       box-shadow:
-        0 25px 55px -10px rgba(190, 90, 120, 0.25),
-        0 0 0 1px rgba(255, 235, 235, 0.4) inset,
-        0 8px 24px rgba(255, 210, 220, 0.4);
+        0 30px 60px -15px rgba(150, 60, 90, 0.25),
+        0 0 0 1px rgba(255, 235, 225, 0.3) inset,
+        0 10px 30px rgba(255, 210, 200, 0.3);
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       text-align: center;
-      overflow: hidden;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(200, 120, 150, 0.4) transparent;
+    }
+
+    .glass-card::-webkit-scrollbar {
+      width: 4px;
+    }
+    .glass-card::-webkit-scrollbar-thumb {
+      background: rgba(200, 120, 150, 0.4);
+      border-radius: 4px;
     }
 
     .card-glow {
       position: absolute;
-      top: 50%;
+      top: 30%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, rgba(235, 120, 150, 0.28) 0%, rgba(255, 160, 180, 0) 70%);
+      width: 340px;
+      height: 340px;
+      background: radial-gradient(circle, rgba(235, 120, 150, 0.18) 0%, rgba(255, 160, 180, 0) 70%);
       border-radius: 50%;
-      filter: blur(35px);
+      filter: blur(45px);
       z-index: 0;
       pointer-events: none;
-      animation: glowPulse 4s infinite ease-in-out;
+      animation: glowPulse 6s infinite ease-in-out;
     }
 
     @keyframes glowPulse {
-      0% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
-      50% { opacity: 0.95; transform: translate(-50%, -50%) scale(1.12); }
-      100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+      0% { opacity: 0.45; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
+      100% { opacity: 0.45; transform: translate(-50%, -50%) scale(1); }
     }
 
-    .final-safa {
+    /* Letter */
+    .letter {
       position: relative;
       z-index: 10;
+      width: 100%;
+      text-align: left;
+      color: #5c2038;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      line-height: 1.85;
+      font-size: clamp(1.02rem, 3.9vw, 1.15rem);
+      letter-spacing: 0.2px;
+      text-shadow: 0 1px 6px rgba(255, 220, 225, 0.7);
+    }
+
+    .letter p {
+      margin-bottom: 1.15em;
+      opacity: 0;
+      animation: fadeSlideIn 1.1s ease forwards;
+    }
+
+    .letter p:last-child {
+      margin-bottom: 0;
+    }
+
+    .letter .salutation {
+      font-style: italic;
+      font-size: clamp(1.5rem, 6vw, 1.9rem);
+      color: #7a2f45;
+      letter-spacing: 1px;
+      margin-bottom: 1.1em;
+      text-shadow: 0 2px 18px rgba(255, 200, 215, 0.9);
+    }
+
+    .letter .emphasis {
+      font-style: italic;
+      color: #8a3b52;
+    }
+
+    /* THE BOLD "I LOVE YOU" */
+    .love-callout {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      text-align: center;
+      margin: 1.6rem 0 1.4rem;
+      opacity: 0;
+      animation: loveReveal 1.6s 2.6s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+    }
+
+    @keyframes loveReveal {
+      0% { opacity: 0; transform: scale(0.8); filter: blur(8px); }
+      60% { opacity: 1; filter: blur(0); }
+      100% { opacity: 1; transform: scale(1); filter: blur(0); }
+    }
+
+    .love-callout .love-text {
+      display: inline-block;
       font-family: 'Georgia', 'Times New Roman', serif;
       font-style: italic;
-      font-weight: 400;
-      font-size: clamp(3.8rem, 15vw, 5.6rem);
-      color: #7a2f45;
-      text-shadow: 0 4px 24px rgba(255, 200, 215, 0.9), 0 2px 16px rgba(200, 100, 130, 0.25);
+      font-weight: 700;
+      font-size: clamp(2.4rem, 11vw, 3.4rem);
+      color: #8a2a45;
       letter-spacing: 2px;
-      margin-bottom: 0.2rem;
-      opacity: 0;
-      animation: fadeSlideIn 1.1s 0.1s ease forwards;
+      line-height: 1.1;
+      text-shadow:
+        0 0 30px rgba(255, 180, 200, 0.95),
+        0 0 60px rgba(255, 140, 170, 0.7),
+        0 4px 18px rgba(160, 40, 80, 0.35);
+      animation: loveGlow 3s infinite ease-in-out;
+      padding: 0.2em 0.5em;
+      position: relative;
     }
 
-    .final-love {
-      position: relative;
-      z-index: 10;
-      font-family: 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
-      font-weight: 300;
-      font-size: clamp(1.7rem, 7vw, 2.2rem);
-      letter-spacing: 2px;
-      color: #a1445e;
-      text-shadow: 0 2px 14px rgba(255, 220, 225, 0.8);
-      margin-top: 0.6rem;
-      opacity: 0;
-      animation: fadeSlideIn 1.1s 1.4s ease forwards;
+    @keyframes loveGlow {
+      0%, 100% {
+        text-shadow:
+          0 0 30px rgba(255, 180, 200, 0.9),
+          0 0 60px rgba(255, 140, 170, 0.6),
+          0 4px 18px rgba(160, 40, 80, 0.3);
+      }
+      50% {
+        text-shadow:
+          0 0 45px rgba(255, 200, 220, 1),
+          0 0 90px rgba(255, 150, 180, 0.85),
+          0 4px 24px rgba(160, 40, 80, 0.45);
+      }
     }
 
-    .final-miss {
-      position: relative;
-      z-index: 10;
-      font-family: 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
-      font-weight: 300;
-      font-size: clamp(1.6rem, 6.5vw, 2.1rem);
-      letter-spacing: 2px;
-      color: #b1576e;
-      text-shadow: 0 2px 14px rgba(255, 220, 225, 0.8);
-      margin-top: 0.3rem;
-      opacity: 0;
-      animation: fadeSlideIn 1.1s 2.3s ease forwards;
+    /* Decorative heart dots around the bold line */
+    .love-callout .love-text::before,
+    .love-callout .love-text::after {
+      content: '❤';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.4em;
+      color: #d45d79;
+      opacity: 0.75;
+      text-shadow: 0 0 12px rgba(255, 160, 190, 0.9);
+      animation: heartTwinkle 2.4s infinite ease-in-out;
+    }
+
+    .love-callout .love-text::before {
+      left: -1.2em;
+      animation-delay: 0s;
+    }
+
+    .love-callout .love-text::after {
+      right: -1.2em;
+      animation-delay: 1.2s;
+    }
+
+    @keyframes heartTwinkle {
+      0%, 100% { opacity: 0.4; transform: translateY(-50%) scale(0.9); }
+      50% { opacity: 1; transform: translateY(-50%) scale(1.2); }
     }
 
     @keyframes fadeSlideIn {
-      0% { opacity: 0; transform: translateY(14px); filter: blur(2px); }
+      0% { opacity: 0; transform: translateY(14px); filter: blur(3px); }
       100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+
+    /* staggered delays */
+    .letter p:nth-child(1) { animation-delay: 0.2s; }
+    .letter p:nth-child(2) { animation-delay: 0.9s; }
+    .letter p:nth-child(3) { animation-delay: 1.6s; }
+    .letter p:nth-child(4) { animation-delay: 4.2s; }
+
+    /* Signature */
+    .signature {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      text-align: right;
+      margin-top: 2rem;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-style: italic;
+      font-size: clamp(1.1rem, 4.2vw, 1.3rem);
+      color: #8a3b52;
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 12px rgba(255, 200, 215, 0.8);
+      opacity: 0;
+      animation: fadeSlideIn 1.2s 5.2s ease forwards;
     }
 
     /* Replay button */
     .replay-btn {
       position: relative;
       z-index: 20;
-      margin-top: 2.4rem;
-      width: 56px;
-      height: 56px;
+      margin-top: 2.2rem;
+      width: 52px;
+      height: 52px;
       border-radius: 50%;
-      border: none;
-      background: radial-gradient(circle at 35% 30%, #ffb3c6, #d94a6e 75%);
-      box-shadow:
-        0 0 0 4px rgba(255, 200, 215, 0.35),
-        0 6px 18px rgba(200, 80, 110, 0.4),
-        0 0 28px rgba(235, 100, 140, 0.35),
-        inset 0 -4px 10px rgba(160, 40, 70, 0.3),
-        inset 0 6px 14px rgba(255, 220, 230, 0.6);
+      border: 1.5px solid rgba(255, 200, 180, 0.6);
+      background: rgba(255, 220, 210, 0.25);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: transform 0.15s ease, box-shadow 0.3s ease;
+      transition: transform 0.2s ease, background 0.3s ease, box-shadow 0.3s ease;
       outline: none;
       opacity: 0;
-      animation: fadeSlideIn 0.8s 2.6s ease forwards;
+      animation: fadeSlideIn 1s 5.7s ease forwards;
+      box-shadow: 0 4px 16px rgba(180, 80, 110, 0.2);
     }
 
     .replay-btn:focus-visible {
@@ -371,22 +520,39 @@
       transform: scale(0.88);
     }
 
-    .replay-btn svg {
-      width: 26px;
-      height: 26px;
-      fill: #fff0f5;
-      filter: drop-shadow(0 0 8px #ffb0c3);
+    .replay-btn:hover {
+      background: rgba(255, 220, 210, 0.4);
+      box-shadow: 0 6px 22px rgba(180, 80, 110, 0.3);
     }
 
-    /* ---------- HEART BURST FROM TAPS ---------- */
-    .tap-burst-heart {
-      position: fixed;
+    .replay-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: #8a3b52;
+      filter: drop-shadow(0 0 6px rgba(255, 180, 200, 0.6));
+    }
+
+    /* Corner roses */
+    .corner-rose {
+      position: absolute;
+      width: 90px;
+      height: 108px;
+      z-index: 2;
+      opacity: 0.8;
+      filter: drop-shadow(0 0 18px rgba(200, 100, 130, 0.3));
       pointer-events: none;
-      z-index: 50;
-      font-size: 1.4rem;
-      color: #e05a7a;
-      filter: drop-shadow(0 0 8px #ffb0c3);
-      will-change: transform, opacity;
+    }
+
+    .corner-rose.bottom-left {
+      bottom: -10px;
+      left: -15px;
+      transform: rotate(-15deg);
+    }
+
+    .corner-rose.bottom-right {
+      bottom: -10px;
+      right: -15px;
+      transform: rotate(15deg) scaleX(-1);
     }
 
     /* ---------- REDUCED MOTION ---------- */
@@ -398,97 +564,174 @@
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
       }
-      .heart-btn { animation: none; }
-      .ambient-sparkles { display: none; }
-      #particleCanvas { display: none; }
-      .final-safa, .final-love, .final-miss, .replay-btn { opacity: 1; animation: none; }
+      .rose-btn { animation: none; }
+      .spark-orbit { animation: none; opacity: 0.3; }
+      .ambient-glow { display: none; }
+      .letter p, .signature, .replay-btn, .love-callout { opacity: 1; animation: none; }
+      .love-callout .love-text { animation: none; }
       .card-glow { animation: none; }
-      .falling-petal { animation: none; opacity: 0.2; }
+      .spotlight { animation: none; }
+      .falling-petal { display: none; }
+      .love-callout .love-text::before,
+      .love-callout .love-text::after { animation: none; opacity: 0.7; }
     }
 
     /* ---------- RESPONSIVE ---------- */
     @media (max-width: 420px) {
       .glass-card {
-        padding: 2.4rem 1.4rem 2.6rem;
-        border-radius: 46px;
+        padding: 2.4rem 1.5rem 2.4rem;
+        border-radius: 44px;
       }
-      .heart-btn {
-        width: 100px;
-        height: 100px;
+      .rose-svg {
+        width: 140px;
+        height: 172px;
       }
-      .heart-btn-label {
-        font-size: 0.85rem;
-        letter-spacing: 1.5px;
+      .spotlight {
+        width: 250px;
+        height: 250px;
+      }
+      .spark-orbit {
+        width: 165px;
+        height: 165px;
       }
       .replay-btn {
-        width: 50px;
-        height: 50px;
+        width: 46px;
+        height: 46px;
       }
       .replay-btn svg {
-        width: 22px;
-        height: 22px;
+        width: 20px;
+        height: 20px;
+      }
+      .corner-rose {
+        width: 70px;
+        height: 84px;
+      }
+      .letter {
+        font-size: 1rem;
+        line-height: 1.8;
+      }
+      .love-callout .love-text {
+        font-size: 2.2rem;
+      }
+      .love-callout .love-text::before {
+        left: -0.9em;
+      }
+      .love-callout .love-text::after {
+        right: -0.9em;
       }
     }
 
     img, canvas, svg { max-width: 100%; }
-
-    /* Hide overflow for cinematic reveal */
-    body.reveal-active {
-      overflow: hidden;
-    }
   </style>
 </head>
-<body class="state-dark">
-  <!-- Ambient sparkles (dark phase) -->
-  <div class="ambient-sparkles" id="ambientSparkles" aria-hidden="true">
-    <div class="sparkle-dot" style="left: 8%; top: 12%; animation-delay: 0s;"></div>
-    <div class="sparkle-dot" style="left: 92%; top: 18%; animation-delay: 0.7s;"></div>
-    <div class="sparkle-dot" style="left: 15%; top: 78%; animation-delay: 1.4s;"></div>
-    <div class="sparkle-dot" style="left: 85%; top: 82%; animation-delay: 2.1s;"></div>
-    <div class="sparkle-dot" style="left: 50%; top: 6%; animation-delay: 0.4s;"></div>
-    <div class="sparkle-dot" style="left: 25%; top: 45%; animation-delay: 1.1s;"></div>
-    <div class="sparkle-dot" style="left: 75%; top: 55%; animation-delay: 1.8s;"></div>
-    <div class="sparkle-dot" style="left: 5%; top: 35%; animation-delay: 2.4s;"></div>
-    <div class="sparkle-dot" style="left: 95%; top: 65%; animation-delay: 0.9s;"></div>
-    <div class="sparkle-dot" style="left: 60%; top: 90%; animation-delay: 1.6s;"></div>
-    <div class="sparkle-dot" style="left: 40%; top: 25%; animation-delay: 2.8s;"></div>
-    <div class="sparkle-dot" style="left: 70%; top: 8%; animation-delay: 0.2s;"></div>
-  </div>
+<body class="state-midnight">
+  <!-- Grain -->
+  <div class="grain" aria-hidden="true"></div>
 
-  <!-- Particle canvas -->
-  <canvas id="particleCanvas"></canvas>
+  <!-- Ambient glow dots -->
+  <div class="ambient-glow" id="ambientGlow" aria-hidden="true">
+    <div class="glow-dot" style="left: 10%; top: 15%; animation-delay: 0s;"></div>
+    <div class="glow-dot" style="left: 90%; top: 20%; animation-delay: 0.7s;"></div>
+    <div class="glow-dot" style="left: 12%; top: 80%; animation-delay: 1.4s;"></div>
+    <div class="glow-dot" style="left: 88%; top: 85%; animation-delay: 2.1s;"></div>
+    <div class="glow-dot" style="left: 50%; top: 8%; animation-delay: 0.4s;"></div>
+    <div class="glow-dot" style="left: 22%; top: 50%; animation-delay: 1.1s;"></div>
+    <div class="glow-dot" style="left: 78%; top: 55%; animation-delay: 1.8s;"></div>
+    <div class="glow-dot" style="left: 5%; top: 40%; animation-delay: 2.4s;"></div>
+    <div class="glow-dot" style="left: 95%; top: 70%; animation-delay: 0.9s;"></div>
+    <div class="glow-dot" style="left: 60%; top: 92%; animation-delay: 1.6s;"></div>
+    <div class="glow-dot" style="left: 35%; top: 22%; animation-delay: 2.8s;"></div>
+    <div class="glow-dot" style="left: 70%; top: 10%; animation-delay: 0.2s;"></div>
+  </div>
 
   <!-- App -->
   <div id="app">
     <!-- INITIAL SCREEN -->
     <div id="initialScreen">
       <button 
-        class="heart-btn" 
-        id="heartBtn" 
-        aria-label="Tap here to begin the surprise"
+        class="rose-btn" 
+        id="roseBtn" 
+        aria-label="Tap here to read a letter"
         type="button"
       >
-        <span class="heart-btn-label">Tap here</span>
+        <div class="spotlight" aria-hidden="true"></div>
+        
+        <!-- Rose SVG -->
+        <svg class="rose-svg" viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M100 240 Q98 190 100 150" stroke="#4a2a3a" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <path d="M100 200 Q80 185 70 195" stroke="#4a2a3a" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M100 180 Q120 165 130 175" stroke="#4a2a3a" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <ellipse cx="68" cy="193" rx="14" ry="6" fill="#3d2230" transform="rotate(-30 68 193)"/>
+          <ellipse cx="132" cy="173" rx="14" ry="6" fill="#3d2230" transform="rotate(30 132 173)"/>
+          
+          <ellipse cx="100" cy="120" rx="38" ry="50" fill="#6b1f38" transform="rotate(-5 100 120)"/>
+          <ellipse cx="100" cy="118" rx="34" ry="46" fill="#8a2a45" transform="rotate(5 100 118)"/>
+          <ellipse cx="100" cy="116" rx="30" ry="42" fill="#a83552" transform="rotate(-3 100 116)"/>
+          <ellipse cx="100" cy="115" rx="24" ry="36" fill="#c4456a" transform="rotate(4 100 115)"/>
+          <ellipse cx="100" cy="114" rx="18" ry="30" fill="#d95a7a" transform="rotate(-2 100 114)"/>
+          <ellipse cx="100" cy="113" rx="12" ry="22" fill="#e87a95" transform="rotate(2 100 113)"/>
+          <ellipse cx="100" cy="112" rx="7" ry="14" fill="#f0a0b5" transform="rotate(-1 100 112)"/>
+          <ellipse cx="94" cy="100" rx="4" ry="8" fill="#ffd0dd" opacity="0.4" transform="rotate(-15 94 100)"/>
+          <path d="M70 110 Q65 130 75 150" stroke="#7a1f38" stroke-width="1.5" fill="none" opacity="0.6"/>
+          <path d="M130 110 Q135 130 125 150" stroke="#7a1f38" stroke-width="1.5" fill="none" opacity="0.6"/>
+        </svg>
+        
+        <div class="spark-orbit" aria-hidden="true">
+          <div class="spark-dot"></div>
+        </div>
+        
+        <span class="tap-label">Tap here</span>
       </button>
     </div>
 
     <!-- FINAL SCREEN -->
     <div id="finalScreen">
-      <!-- Constellation stars -->
-      <div class="constellation" id="constellation" aria-hidden="true"></div>
-      
       <!-- Falling petals -->
       <div class="falling-petals" id="fallingPetals" aria-hidden="true"></div>
 
+      <!-- Corner roses -->
+      <svg class="corner-rose bottom-left" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <ellipse cx="50" cy="60" rx="30" ry="38" fill="#c4456a" opacity="0.7"/>
+        <ellipse cx="50" cy="58" rx="24" ry="32" fill="#d95a7a" opacity="0.7"/>
+        <ellipse cx="50" cy="56" rx="18" ry="26" fill="#e87a95" opacity="0.7"/>
+        <ellipse cx="50" cy="55" rx="12" ry="18" fill="#f0a0b5" opacity="0.8"/>
+        <ellipse cx="50" cy="54" rx="6" ry="10" fill="#ffd0dd" opacity="0.8"/>
+        <path d="M50 100 Q48 115 50 120" stroke="#4a2a3a" stroke-width="4" fill="none"/>
+      </svg>
+      <svg class="corner-rose bottom-right" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <ellipse cx="50" cy="60" rx="30" ry="38" fill="#c4456a" opacity="0.7"/>
+        <ellipse cx="50" cy="58" rx="24" ry="32" fill="#d95a7a" opacity="0.7"/>
+        <ellipse cx="50" cy="56" rx="18" ry="26" fill="#e87a95" opacity="0.7"/>
+        <ellipse cx="50" cy="55" rx="12" ry="18" fill="#f0a0b5" opacity="0.8"/>
+        <ellipse cx="50" cy="54" rx="6" ry="10" fill="#ffd0dd" opacity="0.8"/>
+        <path d="M50 100 Q48 115 50 120" stroke="#4a2a3a" stroke-width="4" fill="none"/>
+      </svg>
+
       <div class="glass-card">
         <div class="card-glow" aria-hidden="true"></div>
-        <div class="final-safa">Safa</div>
-        <div class="final-love">I love you</div>
-        <div class="final-miss">I miss you</div>
+
+        <div class="letter">
+          <p class="salutation">Safa,</p>
+          <p>I don’t always know how to explain how much you mean to me.</p>
+          <p>I love the little things about you—your smile, your laugh, and the way you make an ordinary day feel special.</p>
+        </div>
+
+        <!-- THE BOLD "I LOVE YOU" -->
+        <div class="love-callout">
+          <span class="love-text">I love you</span>
+        </div>
+
+        <div class="letter">
+          <p>I miss our conversations and the moments we spend together.</p>
+          <p>I made this little surprise to make you smile and remind you how much I love you.</p>
+        </div>
+
+        <div class="signature">Always,<br>me</div>
+
         <button 
           class="replay-btn" 
           id="replayBtn" 
-          aria-label="Replay the surprise"
+          aria-label="Replay the letter"
           type="button"
         >
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -503,631 +746,142 @@
     (function() {
       'use strict';
 
-      // ---------- DOM ----------
       const body = document.body;
       const initialScreen = document.getElementById('initialScreen');
       const finalScreen = document.getElementById('finalScreen');
-      const heartBtn = document.getElementById('heartBtn');
+      const roseBtn = document.getElementById('roseBtn');
       const replayBtn = document.getElementById('replayBtn');
-      const ambientSparkles = document.getElementById('ambientSparkles');
-      const constellation = document.getElementById('constellation');
+      const ambientGlow = document.getElementById('ambientGlow');
       const fallingPetals = document.getElementById('fallingPetals');
-      const canvas = document.getElementById('particleCanvas');
-      const ctx = canvas.getContext('2d');
 
-      // ---------- State ----------
-      let isRevealed = false;
-      let isAnimating = false;
-      let particles = [];
-      let animationFrameId = null;
-      let canvasWidth = 0;
-      let canvasHeight = 0;
-      let dpr = 1;
-      let phase = 'dark'; // 'dark' | 'forming' | 'burst' | 'reveal'
-
-      // Reduced motion
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      // ---------- Canvas setup ----------
-      function resizeCanvas() {
-        dpr = Math.min(window.devicePixelRatio || 1, 2);
-        canvasWidth = window.innerWidth;
-        canvasHeight = window.innerHeight;
-        canvas.width = canvasWidth * dpr;
-        canvas.height = canvasHeight * dpr;
-        canvas.style.width = canvasWidth + 'px';
-        canvas.style.height = canvasHeight + 'px';
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      }
-      window.addEventListener('resize', () => {
-        resizeCanvas();
-      });
-      resizeCanvas();
-
-      // ---------- Particle colours ----------
-      const COLORS = [
-        '#ff6b8a', '#ff8fa3', '#ffb3c6', '#e05a7a', '#c94f6d',
-        '#f9a8b7', '#ffc0cb', '#ffd700', '#ffe066', '#ffb347',
-        '#ff4d6d', '#ff758f', '#d45d79', '#b1576e', '#ffc2d1',
-        '#ff9eb5', '#e8a0b8'
-      ];
-
-      // ---------- Particle creation ----------
-      function createParticle(x, y, type, opts) {
-        const angle = opts?.angle ?? (Math.random() * Math.PI * 2);
-        const speed = opts?.speed ?? (1.5 + Math.random() * 6);
-        const size = type === 'sparkle' ? (2 + Math.random() * 5) : (5 + Math.random() * 12);
-        const color = COLORS[Math.floor(Math.random() * COLORS.length)];
-        const life = 1.0;
-        const decay = opts?.decay ?? (0.007 + Math.random() * 0.01);
-
-        return {
-          x, y,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed - (opts?.upBias ?? 2),
-          size,
-          color,
-          life,
-          decay,
-          rotation: Math.random() * Math.PI * 2,
-          rotationSpeed: (Math.random() - 0.5) * 0.15,
-          type,
-          gravity: type === 'confetti' ? 0.08 : 0.02,
-          drag: 0.985,
-          wobble: Math.random() * 10,
-          wobbleSpeed: 0.03 + Math.random() * 0.05,
-          targetX: opts?.targetX,
-          targetY: opts?.targetY,
-          swirl: opts?.swirl ?? 0,
-          formProgress: 0
-        };
-      }
-
-      // ---------- Drawing helpers ----------
-      function drawHeart(ctx, x, y, size, color, rotation) {
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.rotate(rotation);
-        ctx.scale(size / 20, size / 20);
-        ctx.beginPath();
-        ctx.moveTo(0, -6);
-        ctx.bezierCurveTo(-10, -16, -20, -2, 0, 12);
-        ctx.bezierCurveTo(20, -2, 10, -16, 0, -6);
-        ctx.closePath();
-        ctx.fillStyle = color;
-        ctx.shadowColor = color;
-        ctx.shadowBlur = 10;
-        ctx.fill();
-        ctx.restore();
-      }
-
-      function drawPetal(ctx, x, y, size, color, rotation) {
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.rotate(rotation);
-        ctx.beginPath();
-        ctx.ellipse(0, 0, size * 0.5, size * 0.28, 0, 0, Math.PI * 2);
-        ctx.fillStyle = color;
-        ctx.shadowColor = color;
-        ctx.shadowBlur = 8;
-        ctx.fill();
-        ctx.beginPath();
-        ctx.ellipse(-size * 0.1, -size * 0.05, size * 0.12, size * 0.08, 0.3, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255,255,255,0.3)';
-        ctx.fill();
-        ctx.restore();
-      }
-
-      function drawSparkle(ctx, x, y, size, color) {
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.beginPath();
-        const s = size * 0.5;
-        ctx.moveTo(0, -s * 1.8);
-        ctx.lineTo(s * 0.4, -s * 0.4);
-        ctx.lineTo(s * 1.8, 0);
-        ctx.lineTo(s * 0.4, s * 0.4);
-        ctx.lineTo(0, s * 1.8);
-        ctx.lineTo(-s * 0.4, s * 0.4);
-        ctx.lineTo(-s * 1.8, 0);
-        ctx.lineTo(-s * 0.4, -s * 0.4);
-        ctx.closePath();
-        ctx.fillStyle = color;
-        ctx.shadowColor = color;
-        ctx.shadowBlur = 16;
-        ctx.fill();
-        ctx.restore();
-      }
-
-      function drawConfetti(ctx, x, y, size, color, rotation) {
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.rotate(rotation);
-        ctx.fillStyle = color;
-        ctx.shadowColor = color;
-        ctx.shadowBlur = 6;
-        ctx.fillRect(-size * 0.4, -size * 0.15, size * 0.8, size * 0.3);
-        ctx.restore();
-      }
-
-      // ---------- Animation loop ----------
-      function updateAndDrawParticles() {
-        if (prefersReducedMotion) {
-          ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-          return;
-        }
-
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-        for (let i = particles.length - 1; i >= 0; i--) {
-          const p = particles[i];
-
-          // Phase-specific physics
-          if (phase === 'forming' && p.targetX !== undefined) {
-            // Swirl towards center
-            p.formProgress += 0.012;
-            const dx = p.targetX - p.x;
-            const dy = p.targetY - p.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist > 2) {
-              const pull = 0.04 * p.formProgress;
-              p.vx += (dx / dist) * pull;
-              p.vy += (dy / dist) * pull;
-              // Swirl
-              if (p.swirl) {
-                p.vx += -dy / dist * p.swirl * 0.02;
-                p.vy += dx / dist * p.swirl * 0.02;
-              }
-            }
-            p.vx *= 0.96;
-            p.vy *= 0.96;
-          } else {
-            // Normal physics
-            p.vy += p.gravity;
-            p.vx *= p.drag;
-            p.vy *= p.drag;
-          }
-
-          p.x += p.vx;
-          p.y += p.vy;
-          p.rotation += p.rotationSpeed;
-          p.life -= p.decay;
-          p.wobble += p.wobbleSpeed;
-
-          if (p.life <= 0 || p.y > canvasHeight + 150 || p.x < -150 || p.x > canvasWidth + 150) {
-            particles.splice(i, 1);
-            continue;
-          }
-
-          const wobbleX = Math.sin(p.wobble) * 0.8;
-          const drawX = p.x + wobbleX;
-          const drawY = p.y;
-
-          ctx.globalAlpha = Math.min(p.life * 1.2, 1);
-
-          switch (p.type) {
-            case 'heart':   drawHeart(ctx, drawX, drawY, p.size, p.color, p.rotation); break;
-            case 'petal':   drawPetal(ctx, drawX, drawY, p.size, p.color, p.rotation); break;
-            case 'sparkle': drawSparkle(ctx, drawX, drawY, p.size, p.color); break;
-            case 'confetti':drawConfetti(ctx, drawX, drawY, p.size, p.color, p.rotation); break;
-          }
-        }
-        ctx.globalAlpha = 1;
-
-        if (particles.length > 0) {
-          animationFrameId = requestAnimationFrame(updateAndDrawParticles);
-        } else {
-          animationFrameId = null;
-        }
-      }
-
-      function startParticleLoop() {
-        if (prefersReducedMotion) return;
-        if (animationFrameId) return;
-        if (particles.length > 0) {
-          animationFrameId = requestAnimationFrame(updateAndDrawParticles);
-        }
-      }
-
-      // ---------- Build constellation ----------
-      function buildConstellation() {
-        constellation.innerHTML = '';
-        const count = 28;
-        const positions = [];
-
-        // Generate heart-shaped constellation
-        for (let i = 0; i < count; i++) {
-          const t = (i / count) * Math.PI * 2;
-          // Heart parametric equation
-          const hx = 16 * Math.pow(Math.sin(t), 3);
-          const hy = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
-          
-          const scale = Math.min(canvasWidth, canvasHeight) * 0.011;
-          const cx = canvasWidth / 2;
-          const cy = canvasHeight / 2;
-          
-          const x = cx + hx * scale * 1.1;
-          const y = cy + hy * scale * 1.1;
-          
-          positions.push({ x, y });
-        }
-
-        // Add stars at heart positions with slight randomization
-        positions.forEach((pos, i) => {
-          const star = document.createElement('div');
-          star.className = 'constellation-star';
-          star.style.left = (pos.x + (Math.random() - 0.5) * 12) + 'px';
-          star.style.top = (pos.y + (Math.random() - 0.5) * 12) + 'px';
-          star.style.animationDelay = (i * 0.15) + 's';
-          constellation.appendChild(star);
-        });
-
-        // Add a few extra stars for depth
-        for (let i = 0; i < 12; i++) {
-          const star = document.createElement('div');
-          star.className = 'constellation-star';
-          star.style.left = (Math.random() * 100) + '%';
-          star.style.top = (Math.random() * 100) + '%';
-          star.style.opacity = 0.3 + Math.random() * 0.3;
-          star.style.animationDelay = (Math.random() * 4) + 's';
-          star.style.width = (2 + Math.random() * 3) + 'px';
-          star.style.height = star.style.width;
-          constellation.appendChild(star);
-        }
-      }
+      let isRevealed = false;
+      let isAnimating = false;
 
       // ---------- Build falling petals ----------
       function buildFallingPetals() {
         fallingPetals.innerHTML = '';
-        const petalCount = 14;
-        for (let i = 0; i < petalCount; i++) {
+        const count = 12;
+        for (let i = 0; i < count; i++) {
           const petal = document.createElement('div');
           petal.className = 'falling-petal';
           petal.textContent = '🌸';
           petal.style.left = (Math.random() * 100) + '%';
-          petal.style.fontSize = (0.8 + Math.random() * 1.2) + 'rem';
-          petal.style.animationDuration = (10 + Math.random() * 14) + 's';
-          petal.style.animationDelay = (Math.random() * 12) + 's';
-          petal.style.opacity = 0.25 + Math.random() * 0.3;
+          petal.style.fontSize = (0.8 + Math.random() * 1.1) + 'rem';
+          petal.style.animationDuration = (12 + Math.random() * 14) + 's';
+          petal.style.animationDelay = (Math.random() * 14) + 's';
+          petal.style.opacity = 0.2 + Math.random() * 0.3;
           fallingPetals.appendChild(petal);
         }
       }
 
-      // ---------- CINEMATIC REVEAL SEQUENCE ----------
+      // ---------- Reveal ----------
       function startReveal() {
         if (isRevealed || isAnimating) return;
         isAnimating = true;
 
-        // Phase 1: Button contracts + background dims (500ms)
-        heartBtn.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.5s ease, opacity 0.5s ease';
-        heartBtn.style.transform = 'scale(0.05)';
-        heartBtn.style.opacity = '0';
-        heartBtn.style.boxShadow = '0 0 20px 5px rgba(255, 150, 180, 0.6)';
-        
-        // Dim the background
-        body.style.transition = 'background 0.5s ease';
-        body.style.background = '#1a0510';
+        const sparkOrbit = document.querySelector('.spark-orbit');
+        if (sparkOrbit) {
+          sparkOrbit.style.animation = 'orbitSpin 0.7s linear infinite';
+        }
+        ambientGlow.classList.add('fade-out');
 
-        // Fade ambient sparkles
-        ambientSparkles.classList.add('fade-out');
+        roseBtn.style.transition = 'transform 1.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 1.1s ease';
+        roseBtn.style.transform = 'scale(1.4)';
 
-        // Hide initial screen after contraction
+        setTimeout(() => {
+          roseBtn.style.opacity = '0.4';
+          roseBtn.style.transform = 'scale(1.7)';
+        }, 700);
+
         setTimeout(() => {
           initialScreen.classList.add('hidden');
-        }, 400);
+        }, 1300);
 
-        // Phase 2: Particles swirl to form heart (after 500ms, lasts ~1.5s)
         setTimeout(() => {
-          if (prefersReducedMotion) {
-            // Skip particle formation, go straight to reveal
-            finishReveal();
-            return;
-          }
+          body.classList.remove('state-midnight');
+          body.classList.add('state-revealed');
+        }, 1500);
 
-          phase = 'forming';
-          particles = [];
-
-          const centerX = canvasWidth / 2;
-          const centerY = canvasHeight / 2;
-          const heartScale = Math.min(canvasWidth, canvasHeight) * 0.012;
-
-          // Create ~120 particles that swirl to heart positions
-          const particleCount = Math.min(140, Math.floor((canvasWidth * canvasHeight) / 8000));
-          
-          for (let i = 0; i < particleCount; i++) {
-            const t = (i / particleCount) * Math.PI * 2;
-            const hx = 16 * Math.pow(Math.sin(t), 3);
-            const hy = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
-            
-            const targetX = centerX + hx * heartScale * 1.1;
-            const targetY = centerY + hy * heartScale * 1.1;
-
-            // Start from random edge positions
-            const angle = Math.random() * Math.PI * 2;
-            const dist = Math.max(canvasWidth, canvasHeight) * (0.6 + Math.random() * 0.5);
-            const startX = centerX + Math.cos(angle) * dist;
-            const startY = centerY + Math.sin(angle) * dist;
-
-            const typeRoll = Math.random();
-            let type;
-            if (typeRoll < 0.35) type = 'heart';
-            else if (typeRoll < 0.55) type = 'petal';
-            else if (typeRoll < 0.75) type = 'sparkle';
-            else type = 'confetti';
-
-            const p = createParticle(startX, startY, type, {
-              targetX: targetX + (Math.random() - 0.5) * 15,
-              targetY: targetY + (Math.random() - 0.5) * 15,
-              speed: 1 + Math.random() * 2,
-              decay: 0.002 + Math.random() * 0.002,
-              swirl: 0.5 + Math.random() * 1.5,
-              upBias: 0
-            });
-            p.swirl = 0.5 + Math.random() * 2;
-            particles.push(p);
-          }
-
-          startParticleLoop();
-
-          // Phase 3: After formation, pulse twice then burst
-          setTimeout(() => {
-            // Store heart positions for pulse
-            const heartParticles = particles.slice();
-            
-            // Pulse 1 - expand
-            setTimeout(() => {
-              heartParticles.forEach(p => {
-                p.targetX = canvasWidth / 2 + (p.targetX - canvasWidth / 2) * 1.25;
-                p.targetY = canvasHeight / 2 + (p.targetY - canvasHeight / 2) * 1.25;
-              });
-            }, 0);
-
-            // Pulse 1 - contract
-            setTimeout(() => {
-              heartParticles.forEach(p => {
-                p.targetX = canvasWidth / 2 + (p.targetX - canvasWidth / 2) / 1.25;
-                p.targetY = canvasHeight / 2 + (p.targetY - canvasHeight / 2) / 1.25;
-              });
-            }, 250);
-
-            // Pulse 2 - expand
-            setTimeout(() => {
-              heartParticles.forEach(p => {
-                p.targetX = canvasWidth / 2 + (p.targetX - canvasWidth / 2) * 1.25;
-                p.targetY = canvasHeight / 2 + (p.targetY - canvasHeight / 2) * 1.25;
-              });
-            }, 500);
-
-            // Pulse 2 - contract
-            setTimeout(() => {
-              heartParticles.forEach(p => {
-                p.targetX = canvasWidth / 2 + (p.targetX - canvasWidth / 2) / 1.25;
-                p.targetY = canvasHeight / 2 + (p.targetY - canvasHeight / 2) / 1.25;
-              });
-            }, 750);
-
-            // Phase 4: BURST! (after ~1.5s of formation)
-            setTimeout(() => {
-              phase = 'burst';
-              
-              // Convert all particles to burst particles
-              particles.forEach(p => {
-                p.targetX = undefined;
-                p.targetY = undefined;
-                p.swirl = 0;
-                const angle = Math.random() * Math.PI * 2;
-                const speed = 3 + Math.random() * 8;
-                p.vx = Math.cos(angle) * speed;
-                p.vy = Math.sin(angle) * speed - 3;
-                p.decay = 0.006 + Math.random() * 0.01;
-                p.gravity = p.type === 'confetti' ? 0.1 : 0.03;
-                p.drag = 0.985;
-              });
-
-              // Add extra particles for the burst
-              const extraCount = Math.min(160, Math.floor((canvasWidth * canvasHeight) / 6000));
-              const centerX = canvasWidth / 2;
-              const centerY = canvasHeight / 2;
-
-              for (let i = 0; i < extraCount; i++) {
-                const typeRoll = Math.random();
-                let type;
-                if (typeRoll < 0.4) type = 'heart';
-                else if (typeRoll < 0.62) type = 'petal';
-                else if (typeRoll < 0.82) type = 'sparkle';
-                else type = 'confetti';
-
-                particles.push(createParticle(
-                  centerX + (Math.random() - 0.5) * 50,
-                  centerY + (Math.random() - 0.5) * 50,
-                  type,
-                  { speed: 4 + Math.random() * 8, upBias: 2 }
-                ));
-              }
-
-              // Start background transition to blush
-              body.classList.remove('state-dark');
-              body.classList.add('state-reveal');
-              body.style.background = '';
-
-              // Phase 5: Reveal the message
-              setTimeout(() => {
-                finishReveal();
-              }, 400);
-
-            }, 1600);
-
-          }, 100);
-
-        }, 500);
+        setTimeout(() => {
+          finalScreen.classList.add('visible');
+          isRevealed = true;
+          isAnimating = false;
+          buildFallingPetals();
+        }, 1900);
       }
 
-      function finishReveal() {
-        // Show final screen
-        finalScreen.classList.add('visible');
-        isRevealed = true;
-        isAnimating = false;
-
-        // Build decorations
-        buildConstellation();
-        buildFallingPetals();
-
-        // Start gentle ambient particle loop for floating hearts
-        if (!prefersReducedMotion) {
-          // Spawn a few gentle hearts periodically
-          setInterval(() => {
-            if (particles.length < 40 && isRevealed) {
-              const x = Math.random() * canvasWidth;
-              const y = canvasHeight + 20;
-              const p = createParticle(x, y, 'heart', {
-                speed: 0.5 + Math.random() * 1,
-                upBias: 1 + Math.random() * 1.5,
-                decay: 0.003 + Math.random() * 0.003
-              });
-              p.gravity = -0.005;
-              p.vx = (Math.random() - 0.5) * 0.5;
-              particles.push(p);
-              startParticleLoop();
-            }
-          }, 1800);
-        }
-      }
-
-      // ---------- Reset to initial ----------
+      // ---------- Reset ----------
       function resetToInitial() {
         if (isAnimating) return;
         isAnimating = true;
 
-        // Hide final screen
         finalScreen.classList.remove('visible');
+        body.classList.remove('state-revealed');
+        body.classList.add('state-midnight');
+        ambientGlow.classList.remove('fade-out');
 
-        // Clear particles
-        particles = [];
-        if (animationFrameId) {
-          cancelAnimationFrame(animationFrameId);
-          animationFrameId = null;
+        roseBtn.style.transition = 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease';
+        roseBtn.style.transform = 'scale(1)';
+        roseBtn.style.opacity = '1';
+
+        const sparkOrbit = document.querySelector('.spark-orbit');
+        if (sparkOrbit) {
+          sparkOrbit.style.animation = 'orbitSpin 5s linear infinite';
         }
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-        // Reset background
-        body.classList.remove('state-reveal');
-        body.classList.add('state-dark');
-        body.style.background = '';
+        document.querySelectorAll('.letter p').forEach(p => {
+          p.style.animation = 'none';
+          void p.offsetHeight;
+        });
+        const sig = document.querySelector('.signature');
+        if (sig) { sig.style.animation = 'none'; void sig.offsetHeight; }
+        const rep = document.querySelector('.replay-btn');
+        if (rep) { rep.style.animation = 'none'; void rep.offsetHeight; }
+        const love = document.querySelector('.love-callout');
+        if (love) { love.style.animation = 'none'; void love.offsetHeight; }
 
-        // Reset ambient sparkles
-        ambientSparkles.classList.remove('fade-out');
-
-        // Reset button
-        heartBtn.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.5s ease, opacity 0.5s ease';
-        heartBtn.style.transform = 'scale(1)';
-        heartBtn.style.opacity = '1';
-        heartBtn.style.boxShadow = '';
-
-        // Show initial screen
         setTimeout(() => {
           initialScreen.classList.remove('hidden');
+
+          // Re-apply staggered animations
+          document.querySelectorAll('.letter p').forEach((p, i) => {
+            p.style.animation = `fadeSlideIn 1.1s ${0.2 + i * 0.7}s ease forwards`;
+          });
+          if (love) love.style.animation = 'loveReveal 1.6s 2.6s cubic-bezier(0.2, 0.8, 0.3, 1) forwards';
+          if (sig) sig.style.animation = 'fadeSlideIn 1.2s 5.2s ease forwards';
+          if (rep) rep.style.animation = 'fadeSlideIn 1s 5.7s ease forwards';
+
           isRevealed = false;
           isAnimating = false;
-          phase = 'dark';
-        }, 400);
+        }, 500);
       }
 
-      // ---------- Tap-to-burst on empty areas (final screen) ----------
-      function handleTapBurst(e) {
-        if (!isRevealed || prefersReducedMotion) return;
-        
-        // Don't trigger on replay button
-        if (e.target.closest('.replay-btn')) return;
-        
-        // Don't trigger on glass card content (only empty areas)
-        if (e.target.closest('.glass-card')) return;
-
-        const x = e.clientX || (e.touches && e.touches[0].clientX);
-        const y = e.clientY || (e.touches && e.touches[0].clientY);
-        if (x === undefined || y === undefined) return;
-
-        // Spawn a small burst of hearts
-        for (let i = 0; i < 8; i++) {
-          const angle = Math.random() * Math.PI * 2;
-          const speed = 1 + Math.random() * 3;
-          const p = createParticle(x, y, 'heart', {
-            angle,
-            speed,
-            upBias: 1 + Math.random() * 2,
-            decay: 0.01 + Math.random() * 0.015
-          });
-          p.size = 4 + Math.random() * 6;
-          particles.push(p);
-        }
-        startParticleLoop();
-
-        // Also create DOM hearts for immediate feedback
-        for (let i = 0; i < 5; i++) {
-          const heart = document.createElement('div');
-          heart.className = 'tap-burst-heart';
-          heart.textContent = '❤️';
-          heart.style.left = x + 'px';
-          heart.style.top = y + 'px';
-          heart.style.fontSize = (0.8 + Math.random() * 0.8) + 'rem';
-          
-          const tx = (Math.random() - 0.5) * 120;
-          const ty = -40 - Math.random() * 80;
-          
-          heart.style.transition = 'transform 0.9s cubic-bezier(0.2, 0.8, 0.3, 1), opacity 0.9s ease';
-          heart.style.transform = 'translate(0, 0) scale(1)';
-          heart.style.opacity = '1';
-          
-          document.body.appendChild(heart);
-          
-          requestAnimationFrame(() => {
-            heart.style.transform = `translate(${tx}px, ${ty}px) scale(0.3)`;
-            heart.style.opacity = '0';
-          });
-          
-          setTimeout(() => {
-            if (heart.parentNode) heart.remove();
-          }, 950);
-        }
-      }
-
-      // ---------- Event listeners ----------
-      heartBtn.addEventListener('click', startReveal);
-
+      // ---------- Events ----------
+      roseBtn.addEventListener('click', startReveal);
       replayBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         resetToInitial();
       });
 
-      // Tap-to-burst on document (only when final screen visible)
-      document.addEventListener('click', handleTapBurst);
-
-      // Prevent double-tap zoom on buttons
-      [heartBtn, replayBtn].forEach(btn => {
+      [roseBtn, replayBtn].forEach(btn => {
         btn.addEventListener('touchstart', () => {}, { passive: true });
         btn.addEventListener('contextmenu', (e) => e.preventDefault());
       });
 
-      // ---------- Init ----------
-      body.classList.add('state-dark');
-      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-      // If reduced motion, we skip the full cinematic and show a gentle reveal
+      // Reduced motion: immediate fade reveal
       if (prefersReducedMotion) {
-        // Override startReveal with a simple fade
-        heartBtn.addEventListener('click', function simpleReveal() {
+        roseBtn.addEventListener('click', function simpleReveal() {
           if (isRevealed || isAnimating) return;
           isAnimating = true;
-          
           initialScreen.classList.add('hidden');
-          body.classList.remove('state-dark');
-          body.classList.add('state-reveal');
-          
+          body.classList.remove('state-midnight');
+          body.classList.add('state-revealed');
           setTimeout(() => {
             finalScreen.classList.add('visible');
             isRevealed = true;
             isAnimating = false;
-            buildConstellation();
-            buildFallingPetals();
           }, 300);
         }, { once: true });
       }
