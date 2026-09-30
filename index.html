@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>A Little World for You</title>
+<title>A Little World for My Love</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Caveat:wght@600&family=Nunito:wght@400;700&display=swap">
 <style>
 :root{--mid:#0f1330;--plum:#3a1748;--gold:#e6c988;--ivory:#fbf3e8;--rose:#d9a0a5;--cherry:#b3193f;--lav:#cdbfe8;--ink:#3b2233;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -64,7 +64,7 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;-webki
 .art svg{width:112px;height:112px;overflow:visible;filter:drop-shadow(0 6px 8px rgba(60,20,60,.3));transition:transform .2s}
 .obj:active .art svg{transform:scale(.94)}
 .lab{background:rgba(251,243,232,.94);padding:.35rem .95rem;border-radius:999px;font-weight:700;font-size:.95rem;color:var(--plum)}
-.obj:before,.obj:after{content:'✦'/'';position:absolute;color:var(--gold);font-size:1rem;animation:tw 3s ease-in-out infinite}
+.obj:before,.obj:after{content:'✦';position:absolute;color:var(--gold);font-size:1rem;animation:tw 3s ease-in-out infinite}
 .obj:before{top:6px;left:12px}.obj:after{top:40px;right:6px;animation-delay:1.4s;font-size:.75rem}
 @keyframes tw{0%,100%{opacity:.15;transform:scale(.6)}50%{opacity:1;transform:scale(1)}}
 .chk{position:absolute;top:2px;right:8px;width:28px;height:28px;border-radius:50%;background:var(--cherry);color:#fff;display:grid;place-items:center;font-size:.85rem;opacity:0;transform:scale(.4);transition:.4s}
@@ -160,7 +160,7 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;-webki
   <svg id="fh" viewBox="0 0 32 29" aria-hidden="true"><path fill="#ffb3c4" d="M16 28C2 18 0 9 5 4c5-5 10-1 11 3 1-4 6-8 11-3 5 5 3 14-11 24z"/></svg>
 </div>
 
-<main id="world" aria-label="A little world for Safa" tabindex="-1">
+<main id="world" aria-label="A little world for my love" tabindex="-1">
   <section class="hero">
     <h1 class="rv" id="hName"></h1><p class="rv serif big"></p><p class="rv serif big"></p><p class="rv sub"></p>
     <svg class="cue rv" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6l7 7 7-7" fill="none" stroke="#ffe7b0" stroke-width="2.5" stroke-linecap="round"/></svg>
@@ -185,18 +185,18 @@ const C={
  colors:{mid:'#0f1330',plum:'#3a1748',gold:'#e6c988',ivory:'#fbf3e8',rose:'#d9a0a5',cherry:'#b3193f',lav:'#cdbfe8',ink:'#3b2233'},
  t:{go:200,lift:1000,rise:1300,dive:2600,open:3400,zoom:4400,world:4600,h0:5400,h1:6200,h2:7000,sub:7800,end:8200},
  tap:'Tap here',
- hero:['Safa','I love you','I miss you'],
+ hero:['My love','I love you','I miss you'],
  sub:'I made you a little world, filled with the things I wish I could tell you in person.',
  obj:{env:'A letter for you',jar:'Little reasons',moon:'When I miss you',gift:'A little warmth',note:'One little question'},
  key:'One last surprise',reveal:'Reveal final surprise',keyLive:'A golden key has appeared in the world.',
- letter:['Safa,','I don’t always know how to explain how much you mean to me. Sometimes it’s in the little things—wanting to tell you about my day, wondering how yours went, or smiling when I see your name on my screen.','I love you, and I miss you. I wish I could turn those words into something you could hold, so I made this little world for you instead.','Every small surprise here is another way of saying that you matter to me. I hope it makes you smile, because making you happy means so much to me.','With love,<br>Faheem'],
+ letter:['My love,','I don’t always know how to explain how much you mean to me. Sometimes it’s in the little things—wanting to tell you about my day, wondering how yours went, or smiling when I see your name on my screen.','I love you, and I miss you. I wish I could turn those words into something you could hold, so I made this little world for you instead.','Every small surprise here is another way of saying that you matter to me. I hope it makes you smile, because making you happy means so much to me.','With love,<br>Faheem'],
  jar:['You make ordinary moments feel special.','I smile when I see your name on my screen.','I love the person you are.','Even a small conversation with you can brighten my day.','You are someone I always look forward to talking to.','There are so many little things about you that I love.'],
  stars:['I miss your voice.','I miss your smile.','I miss talking to you.','I wish you were here.','Until then, this little sky is yours.'],
  starEnd:'Even when we’re apart, you’re still part of my day.',
  hug:'If I could step through this screen, I’d give you a hug.',again:'Another hug',
  q:'Can I make you smile?',yes:'You already did',more:'Try a little more',
  yesRes:'Then this little surprise was worth it.',moreRes:'This one’s for my favourite smile.',
- final:['Safa,','I love you.','I miss you.','And I’m so glad you’re in my life.'],
+ final:['My love,','I love you.','I miss you.','And I’m so glad you’re in my life.'],
  finalSub:'This little world ends here, but the love behind it goes with you.',explore:'Explore again'
 };
 const $=s=>document.querySelector(s),RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
@@ -275,7 +275,6 @@ function mark(id){
 const panel=$('#panel'),sheet=$('#sheet'),pbody=$('#pbody'),closeBtn=$('#closeBtn'),pt=timers(),fin=$('#fin');
 let last=null,clean=null,isOpen=false,finOpen=false;
 const setInert=on=>{world.inert=on;replay.inert=on};
-const isFocus=()=>{};
 function openPanel(id,btn){
  if(isOpen||finOpen)return;isOpen=true;last=btn;pbody.innerHTML='';sheet.className='sheet'+(id=='moon'?' night':'');
  clean=S[id](pbody)||null;panel.hidden=false;setInert(true);mark(id);closeBtn.focus();sheet.scrollTop=0}
